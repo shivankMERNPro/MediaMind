@@ -2,6 +2,10 @@
 
 An intelligent media management system that automatically analyzes uploaded files (images, videos, documents) using AI to generate descriptions, tags, topics, and enable semantic search.
 
+
+## Project Demonstration Video
+You can watch the demonstration here: [Project demonstration video](https://youtu.be/your-video-id)
+
 ## Features
 
 ### Core Functionality
@@ -36,6 +40,8 @@ An intelligent media management system that automatically analyzes uploaded file
 - OpenAI GPT-4o-mini for tags/topics
 - OpenAI text-embedding-3-small for semantic search
 
+
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -43,11 +49,12 @@ An intelligent media management system that automatically analyzes uploaded file
 - MongoDB instance
 - OpenAI API key
 
+
 ### Backend Setup
 
 1. Navigate to backend directory:
 ```bash
-cd backend
+cd frontend
 ```
 
 2. Install dependencies:
@@ -64,7 +71,24 @@ VITE_GITHUB_CLIENT_ID=your-github-client-id
 VITE_OAUTH_REDIRECT_URI=http://localhost:5173/oauth/callback
 ```
 
-4. Create `.env` file inside backend folder:
+4. Start backend:
+```bash
+npm run dev
+```
+
+### Backend Setup
+
+1. Navigate to backend directory:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create `.env` file inside backend folder:
 ```env
 NODE_ENV=development
 PORT=5000
