@@ -4,7 +4,7 @@ An intelligent media management system that automatically analyzes uploaded file
 
 
 ## Project Demonstration Video
-You can watch the demonstration here: [Project demonstration video](https://youtu.be/your-video-id)
+You can watch the demonstration here: [Project demonstration video](https://drive.google.com/file/d/1uCzoy2kHNrGKEZxi0KOw8IouqF33Y0tW/view?usp=sharing)
 
 ## Features
 
