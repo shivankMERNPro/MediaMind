@@ -54,32 +54,6 @@ You can watch the demonstration here: [Project demonstration video](https://driv
 
 1. Navigate to backend directory:
 ```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env` file inside frontend folder:
-```env
-VITE_API_BASE_URL=http://localhost:5000
-VITE_ENCRYPTION_KEY=dev-encryption-key-change-me
-VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-VITE_GITHUB_CLIENT_ID=your-github-client-id
-VITE_OAUTH_REDIRECT_URI=http://localhost:5173/oauth/callback
-```
-
-4. Start backend:
-```bash
-npm run dev
-```
-
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
 cd backend
 ```
 
