@@ -55,7 +55,16 @@ cd backend
 npm install
 ```
 
-3. Create `.env` file:
+3. Create `.env` file inside frontend folder:
+```env
+VITE_API_BASE_URL=http://localhost:5000
+VITE_ENCRYPTION_KEY=dev-encryption-key-change-me
+VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+VITE_GITHUB_CLIENT_ID=your-github-client-id
+VITE_OAUTH_REDIRECT_URI=http://localhost:5173/oauth/callback
+```
+
+4. Create `.env` file inside backend folder:
 ```env
 NODE_ENV=development
 PORT=5000
