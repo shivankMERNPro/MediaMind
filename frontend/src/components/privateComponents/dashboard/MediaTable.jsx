@@ -5,24 +5,16 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 const MediaTable = ({
   mediaData = [],
   loading = false,
-<<<<<<< HEAD
-
-=======
   paginationModel,
   onPaginationModelChange,
   rowCount = 0,
->>>>>>> main
   anchorEl,
   selectedRow,
   onMenuOpen,
   onMenuClose,
   onEdit,
   onDelete,
-<<<<<<< HEAD
-
-=======
   onViewDetail,
->>>>>>> main
   getTypeIcon,
   getStatusColor,
 }) => {
@@ -33,11 +25,7 @@ const MediaTable = ({
       width: 80,
       sortable: false,
       renderCell: (params) => (
-<<<<<<< HEAD
-        <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-=======
         <Box sx={{ display: "flex", justifyContent: "center", alignItems:"center", height:"55px", width: "100%" }}>
->>>>>>> main
           {getTypeIcon(params.value)}
         </Box>
       ),
@@ -49,11 +37,6 @@ const MediaTable = ({
       sortable: false,
       renderCell: (params) => {
         const row = params.row;
-<<<<<<< HEAD
-        return (
-          <Avatar
-            src={row.type === "image" ? row.preview : ""}
-=======
         const previewUrl =
           row.preview ||
           (row.fileUrl
@@ -62,31 +45,21 @@ const MediaTable = ({
         return (
           <Avatar
             src={row.type === "image" ? previewUrl : ""}
->>>>>>> main
             alt={row.filename}
             variant="rounded"
             sx={{
               width: 56,
               height: 56,
               bgcolor: "rgba(107, 52, 146, 0.3)",
-<<<<<<< HEAD
-            }}
-=======
               cursor: "pointer",
             }}
             onClick={() => onViewDetail && onViewDetail(row)}
->>>>>>> main
           >
             {getTypeIcon(row.type)}
           </Avatar>
         );
       },
     },
-<<<<<<< HEAD
-    { field: "filename", headerName: "Filename", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1 },
-    { field: "tags", headerName: "Tags", flex: 1 },
-=======
     { 
       field: "filename", 
       headerName: "Filename", 
@@ -107,7 +80,6 @@ const MediaTable = ({
     { field: "description", headerName: "AI Description", flex: 1.5, minWidth: 200 },
     { field: "tags", headerName: "Tags", flex: 1, minWidth: 150 },
     { field: "topics", headerName: "Topics", flex: 1, minWidth: 150 },
->>>>>>> main
     { field: "size", headerName: "Size", width: 100 },
     {
       field: "status",
@@ -165,12 +137,9 @@ const MediaTable = ({
               },
             }}
           >
-<<<<<<< HEAD
-=======
             <MenuItem onClick={() => onViewDetail && onViewDetail(selectedRow)}>
               View Details
             </MenuItem>
->>>>>>> main
             <MenuItem onClick={onEdit}>Edit</MenuItem>
             <MenuItem sx={{ color: "#ef4444" }} onClick={onDelete}>
               Delete
@@ -189,18 +158,11 @@ const MediaTable = ({
         loading={loading}
         rowHeight={65}
         disableRowSelectionOnClick
-<<<<<<< HEAD
-        pageSizeOptions={[10, 25, 50]}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-=======
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationModelChange}
         pageSizeOptions={[10, 25, 50]}
         rowCount={rowCount}
         paginationMode="server"
->>>>>>> main
         sx={{
           background: "linear-gradient(135deg, #693b93 0%, #2f1b4b 100%)",
           borderRadius: "20px",

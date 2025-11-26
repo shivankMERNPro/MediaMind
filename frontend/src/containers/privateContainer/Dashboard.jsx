@@ -1,42 +1,23 @@
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
-=======
 import { useState, useEffect, useMemo } from "react";
->>>>>>> main
+
 import { toast } from "react-toastify";
 import SearchForm from "../../components/privateComponents/dashboard/SearchForm";
 import MediaTable from "../../components/privateComponents/dashboard/MediaTable";
 import EditMediaModal from "../../components/privateComponents/dashboard/EditMediaModal";
-<<<<<<< HEAD
-import mockMediaService from "../../features/mockData/mediaMockData";
-=======
 import MediaDetailModal from "../../components/privateComponents/dashboard/MediaDetailModal";
+
 import {
   useGetMediaQuery,
   useSearchMediaQuery,
   useDeleteMediaMutation,
   useUpdateMediaMutation,
 } from "../../features/apiSlices/dashboardApis";
->>>>>>> main
 import useDebounce from "../../hooks/useDebounce";
 
 import ImageIcon from '@mui/icons-material/Image';
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-<<<<<<< HEAD
-const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-
-  const debouncedSearchQuery = useDebounce(searchQuery, 400);
-
-  const [mediaData, setMediaData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const [editModalOpen, setEditModalOpen] = useState(false);
-=======
 const formatFileSize = (bytes) => {
   if (!bytes) return "0 B";
   const k = 1024;
@@ -60,15 +41,12 @@ const Dashboard = () => {
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
->>>>>>> main
   const [selectedMedia, setSelectedMedia] = useState(null);
 
   // Action menu states
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
 
-<<<<<<< HEAD
-=======
   // Determine which query to use
   const shouldUseSemanticSearch = useSemanticSearch && debouncedSearchQuery.trim().length > 0;
 
@@ -163,7 +141,6 @@ const Dashboard = () => {
     setPaginationModel(model);
   };
 
->>>>>>> main
   const handleMenuOpen = (event, row) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
@@ -175,32 +152,6 @@ const Dashboard = () => {
   };
 
   // Filters
-<<<<<<< HEAD
-  const handleSearchChange = (e) => setSearchQuery(e.target.value);
-  const handleTypeChange = (e) => setTypeFilter(e.target.value);
-  const handleStatusChange = (e) => setStatusFilter(e.target.value);
-
-  // Fetch Media
-  const fetchMediaData = async () => {
-    setLoading(true);
-    try {
-      const response = await mockMediaService.getMedia({
-        query: debouncedSearchQuery,
-        type: typeFilter,
-        status: statusFilter,
-      });
-      setMediaData(response.data);
-    } catch (err) {
-      toast.error("Failed to load media");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMediaData();
-  }, [debouncedSearchQuery, typeFilter, statusFilter]);
-=======
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     // Auto-enable semantic search for natural language queries
@@ -216,6 +167,7 @@ const Dashboard = () => {
     const value = event.target.value;
     setSelectedTags(typeof value === "string" ? value.split(",") : value);
   };
+
   const handleTopicsChange = (event) => {
     const value = event.target.value;
     setSelectedTopics(typeof value === "string" ? value.split(",") : value);
@@ -226,7 +178,6 @@ const Dashboard = () => {
     setSelectedMedia(row);
     setDetailModalOpen(true);
   };
->>>>>>> main
 
   // Edit / Delete handlers
   const handleEdit = () => {
@@ -239,15 +190,9 @@ const Dashboard = () => {
     if (!window.confirm("Are you sure you want to delete this media?")) return;
 
     try {
-<<<<<<< HEAD
-      await mockMediaService.deleteMedia(selectedRow.id);
-      setMediaData((prev) => prev.filter((i) => i.id !== selectedRow.id));
-      toast.success("Media deleted");
-=======
       await deleteMedia(selectedRow.id).unwrap();
       toast.success("Media deleted");
       refetchMedia();
->>>>>>> main
     } catch (err) {
       toast.error("Failed to delete");
     }
@@ -256,17 +201,6 @@ const Dashboard = () => {
 
   const handleSaveEdit = async (updatedData) => {
     try {
-<<<<<<< HEAD
-      await mockMediaService.updateMedia(updatedData);
-      setMediaData((prev) =>
-        prev.map((item) =>
-          item.id === updatedData.id ? { ...item, ...updatedData } : item
-        )
-      );
-      toast.success("Media updated");
-      setEditModalOpen(false);
-      setSelectedMedia(null);
-=======
       const payload = {
         id: updatedData.id,
         description: updatedData.description,
@@ -285,31 +219,18 @@ const Dashboard = () => {
       setEditModalOpen(false);
       setSelectedMedia(null);
       refetchMedia();
->>>>>>> main
     } catch {
       toast.error("Failed to update media");
     }
   };
 
-<<<<<<< HEAD
-  // ICON SELECTOR FUNCTION (Mandatory)
-=======
   // ICON SELECTOR FUNCTION
->>>>>>> main
   const getTypeIcon = (type) => {
     if (type === "image") return <ImageIcon sx={{ color: "#fff" }} />;
     if (type === "video") return <VideoCameraBackIcon sx={{ color: "#fff" }} />;
     return <DescriptionIcon sx={{ color: "#fff" }} />;
   };
 
-<<<<<<< HEAD
-  // STATUS COLOR FUNCTION (Mandatory)
-  const getStatusColor = (status) => {
-    const styles = {
-      completed: { bg: "rgba(52,211,153,0.15)", color: "#34d399" },
-      pending: { bg: "rgba(251,191,36,0.15)", color: "#fbbf24" },
-      failed: { bg: "rgba(239,68,68,0.15)", color: "#ef4444" },
-=======
   // STATUS COLOR FUNCTION
   const getStatusColor = (status) => {
     const styles = {
@@ -317,13 +238,10 @@ const Dashboard = () => {
       analyzing: { bg: "rgba(251,191,36,0.15)", color: "#fbbf24" },
       uploading: { bg: "rgba(59,130,246,0.15)", color: "#3b82f6" },
       error: { bg: "rgba(239,68,68,0.15)", color: "#ef4444" },
->>>>>>> main
     };
     return styles[status] || { bg: "rgba(255,255,255,0.1)", color: "#fff" };
   };
 
-<<<<<<< HEAD
-=======
   const totalRows = shouldUseSemanticSearch
     ? semanticResults.length
     : mediaDataResponse?.data?.total || 0;
@@ -338,18 +256,11 @@ const Dashboard = () => {
     shouldUseSemanticSearch,
   ]);
 
->>>>>>> main
   return (
     <div className="container mx-auto px-4 py-6 max-w-[1450px]">
       <SearchForm
         searchQuery={searchQuery}
         typeFilter={typeFilter}
-<<<<<<< HEAD
-        statusFilter={statusFilter}
-        onSearchChange={handleSearchChange}
-        onTypeChange={handleTypeChange}
-        onStatusChange={handleStatusChange}
-=======
         selectedTags={selectedTags}
         selectedTopics={selectedTopics}
         availableTags={availableTags}
@@ -359,38 +270,27 @@ const Dashboard = () => {
         onTagsChange={handleTagsChange}
         onTopicsChange={handleTopicsChange}
         useSemanticSearch={useSemanticSearch}
->>>>>>> main
       />
 
       <div className="mt-8">
         <MediaTable
-<<<<<<< HEAD
-          mediaData={mediaData}
-          loading={loading}
-=======
           mediaData={transformedMediaData}
           loading={loading}
           paginationModel={paginationModel}
           onPaginationModelChange={handlePaginationChange}
           rowCount={totalRows}
->>>>>>> main
           anchorEl={anchorEl}
           selectedRow={selectedRow}
           onMenuOpen={handleMenuOpen}
           onMenuClose={handleMenuClose}
           onEdit={handleEdit}
           onDelete={handleDelete}
-<<<<<<< HEAD
-=======
           onViewDetail={handleViewDetail}
->>>>>>> main
           getTypeIcon={getTypeIcon}
           getStatusColor={getStatusColor}
         />
       </div>
 
-<<<<<<< HEAD
-=======
       <MediaDetailModal
         open={detailModalOpen}
         onClose={() => {
@@ -400,7 +300,6 @@ const Dashboard = () => {
         media={selectedMedia}
       />
 
->>>>>>> main
       <EditMediaModal
         open={editModalOpen}
         onClose={() => {

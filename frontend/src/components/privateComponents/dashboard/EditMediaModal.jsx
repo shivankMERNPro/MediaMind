@@ -24,13 +24,8 @@ const EditMediaModal = ({ open, onClose, media, onSave }) => {
       setFormData({
         filename: media.filename || "",
         description: media.description || "",
-<<<<<<< HEAD
-        tags: media.tags || "",
-        topics: media.topics || "",
-=======
         tags: Array.isArray(media.tags) ? media.tags.join(", ") : media.tags || "",
         topics: Array.isArray(media.topics) ? media.topics.join(", ") : media.topics || "",
->>>>>>> main
       });
     }
   }, [media]);

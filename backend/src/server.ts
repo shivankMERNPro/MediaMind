@@ -9,7 +9,7 @@ import { logger } from './utils/logger';
 // Middlewares :-
 import { corsMiddleware } from './middlewares/cors.middleware';
 import { requestLogger } from './middlewares/logger.middleware';
-import { rateLimiter } from './middlewares/rateLimit.middleware';
+// import { rateLimiter } from './middlewares/rateLimit.middleware';
 import { credentialsHeaderMiddleware } from './middlewares/credentialsHeader.middleware';
 
 import parentRoutes from './app';
@@ -27,7 +27,7 @@ const app = express();
 app.use(helmet()); // Apply security-related HTTP headers to protect against common attacks
 app.use(corsMiddleware); // Enable Cross-Origin Resource Sharing (CORS) for allowed origins
 app.use(credentialsHeaderMiddleware);
-app.use(rateLimiter); // Apply rate limiting to prevent brute-force and DDoS attacks
+// app.use(rateLimiter); // Apply rate limiting to prevent brute-force and DDoS attacks
 app.use(requestLogger); // Log incoming HTTP requests (method, URL, response time, etc.)
 app.use(express.json()); // Parse incoming JSON payloads in request bodies
 app.use(express.urlencoded({ extended: true })); // 🧩 Parse URL-encoded payloads (for form submissions, etc.)

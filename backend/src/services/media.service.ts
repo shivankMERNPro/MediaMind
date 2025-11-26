@@ -30,6 +30,7 @@ export const uploadMediaService = async (
   }
 ): Promise<ApiResponse<IMedia>> => {
   try {
+
     const media = await Media.create({
       userId,
       ...fileData,
@@ -38,31 +39,61 @@ export const uploadMediaService = async (
       uploadedAt: new Date(),
     });
 
-    // Trigger AI processing asynchronously
-    // Use setTimeout to avoid blocking the response
-    setTimeout(async () => {
-      try {
-        // Dynamic import of AI workflow
-        const aiWorkflow = await loadAiWorkflowModule();
-        const mediaId = (media._id as unknown as Types.ObjectId).toString();
-
-        console.log("=============================================================")
-        await aiWorkflow.processMediaWithAI(mediaId, fileData.filePath, fileData.fileType);
-      } catch (error: any) {
-        console.error('AI processing failed:', error);
-        // Update status to error
-        await Media.findByIdAndUpdate(media._id as Types.ObjectId, {
-          status: 'error',
-          processingError: error.message,
-        }).exec();
+    const mediaId = (media._id as unknown as Types.ObjectId).toString();
+    
+    // Update status to analyzing before starting AI processing
+    await Media.findByIdAndUpdate(mediaId, { 
+      status: 'analyzing',
+      analyzedAt: new Date()
+    }).exec();
+    
+    try {
+      // Dynamic import of AI workflow
+      const aiWorkflow = await loadAiWorkflowModule();
+      
+      console.log(`Starting AI processing for media ${mediaId}`);
+      await aiWorkflow.processMediaWithAI(mediaId, fileData.filePath, fileData.fileType);
+      
+      // if (!aiResult) {
+      //   throw new Error("AI processing returned no result");
+      // }
+      
+      console.log(`✅ Completed AI processing for media ${mediaId}`);
+      
+      // Fetch the updated media with AI-generated content
+      const updatedMedia = await Media.findById(mediaId);
+      if (!updatedMedia) {
+        throw new Error("Media not found after AI processing");
       }
-    }, 100);
-
-    return {
-      code: HTTP_STATUS.CREATED,
-      message: 'Media uploaded successfully',
-      data: media.toObject() as IMedia,
-    };
+      
+      return {
+        code: HTTP_STATUS.CREATED,
+        message: 'Media uploaded and analyzed successfully',
+        data: updatedMedia.toObject() as IMedia,
+      };
+      
+    } catch (error: any) {
+      console.error(`❌ AI processing failed for media ${mediaId}:`, error);
+      
+      // Update status to error with detailed message
+      const errorMessage = error.message || 'Unknown error during AI processing';
+      await Media.findByIdAndUpdate(mediaId, {
+        status: 'error',
+        processingError: errorMessage,
+        analyzedAt: new Date()
+      }).exec().catch(updateError => {
+        console.error('Failed to update media error status:', updateError);
+      });
+      
+      // Return the media with error status
+      const errorMedia = await Media.findById(mediaId);
+      return {
+        code: HTTP_STATUS.CREATED,
+        message: 'Media uploaded but AI analysis failed',
+        data: errorMedia?.toObject() as IMedia,
+        error: errorMessage,
+      };
+    }
   } catch (error: any) {
     return {
       code: HTTP_STATUS.INTERNAL_SERVER,
@@ -180,20 +211,124 @@ export const getMediaService = async (
 /**
  * Semantic search using embeddings
  */
+// export const searchMediaService = async (
+//   userId: string,
+//   query: string,
+//   limit: number = 20
+// ): Promise<ApiResponse<{ media: IMedia[]; total: number }>> => {
+//   try {
+//     // Import AI workflow function for semantic search
+//     const { generateEmbedding, findSimilarMedia } = await loadAiWorkflowModule();
+    
+
+//     // Generate embedding for search query
+//     const queryEmbedding = await generateEmbedding(query);
+
+//     // Find similar media using vector similarity
+//     const similarMedia = await findSimilarMedia(
+//       userId,
+//       queryEmbedding,
+//       limit
+//     );
+
+//     return {
+//       code: HTTP_STATUS.OK,
+//       message: 'Search completed successfully',
+//       data: {
+//         media: similarMedia,
+//         total: similarMedia.length,
+//       },
+//     };
+//   } catch (error: any) {
+//     return {
+//       code: HTTP_STATUS.INTERNAL_SERVER,
+//       message: 'Search failed',
+//       error: error.message,
+//     };
+//   }
+// };
+
+
 export const searchMediaService = async (
   userId: string,
   query: string,
   limit: number = 20
 ): Promise<ApiResponse<{ media: IMedia[]; total: number }>> => {
   try {
-    // Import AI workflow function for semantic search
+    if (!query || query.trim().length === 0) {
+      return {
+        code: HTTP_STATUS.BAD_REQUEST,
+        message: "Query cannot be empty",
+      };
+    }
+
+    // Load AI workflow functions
     const { generateEmbedding, findSimilarMedia } = await loadAiWorkflowModule();
 
-    // Generate embedding for search query
+    let similarMedia: IMedia[] = [];
+
+    // ----------------------------------------------------
+    // 1️⃣ Smart Logic → Skip AI embedding for tiny queries
+    // ----------------------------------------------------
+    if (query.trim().length < 3) {
+      console.log("ℹ️ Query too short, using keyword search only.");
+
+      similarMedia = await Media.find({
+        userId,
+        status: "ready",
+        $or: [
+          { description: { $regex: query, $options: "i" } },
+          { tags: { $regex: query, $options: "i" } },
+          { topics: { $regex: query, $options: "i" } },
+        ],
+      })
+        .limit(limit)
+        .lean();
+
+      return {
+        code: HTTP_STATUS.OK,
+        message: "Keyword search completed",
+        data: {
+          media: similarMedia,
+          total: similarMedia.length,
+        },
+      };
+    }
+
+    // ----------------------------------------------------
+    // 2️⃣ Generate embedding for semantic search
+    // ----------------------------------------------------
     const queryEmbedding = await generateEmbedding(query);
 
-    // Find similar media using vector similarity
-    const similarMedia = await findSimilarMedia(
+    if (!queryEmbedding || !Array.isArray(queryEmbedding)) {
+      console.warn("⚠️ Embedding failed. Falling back to keyword search...");
+
+      similarMedia = await Media.find({
+        userId,
+        status: "ready",
+        $or: [
+          { description: { $regex: query, $options: "i" } },
+          { tags: { $regex: query, $options: "i" } },
+          { topics: { $regex: query, $options: "i" } },
+        ],
+      })
+        .limit(limit)
+        .lean();
+
+      return {
+        code: HTTP_STATUS.OK,
+        message: "Fallback keyword search completed",
+        data: {
+          media: similarMedia,
+          total: similarMedia.length,
+        },
+      };
+    }
+
+    // ----------------------------------------------------
+    // 3️⃣ Run semantic vector-based search
+    // ----------------------------------------------------
+    similarMedia = await findSimilarMedia(
       userId,
       queryEmbedding,
       limit
@@ -201,20 +336,24 @@ export const searchMediaService = async (
 
     return {
       code: HTTP_STATUS.OK,
-      message: 'Search completed successfully',
+      message: "Semantic search completed successfully",
       data: {
         media: similarMedia,
         total: similarMedia.length,
       },
     };
   } catch (error: any) {
+    console.error("❌ searchMediaService Error:", error);
+
     return {
       code: HTTP_STATUS.INTERNAL_SERVER,
-      message: 'Search failed',
-      error: error.message,
+      message: "Search failed",
+      error: error?.message || "Unknown error",
     };
   }
 };
+
+
 
 /**
  * Update media metadata

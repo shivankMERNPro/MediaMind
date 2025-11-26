@@ -17,12 +17,6 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 const SearchForm = ({
   searchQuery,
   typeFilter,
-<<<<<<< HEAD
-  statusFilter,
-  onSearchChange,
-  onTypeChange,
-  onStatusChange,
-=======
   selectedTags = [],
   selectedTopics = [],
   availableTags = [],
@@ -32,7 +26,6 @@ const SearchForm = ({
   onTagsChange,
   onTopicsChange,
   useSemanticSearch = false,
->>>>>>> main
 }) => {
 
   return (
@@ -56,14 +49,11 @@ const SearchForm = ({
           }}
         >
           Search and manage your AI-analyzed media
-<<<<<<< HEAD
-=======
           {useSemanticSearch && (
             <span style={{ marginLeft: 8, color: "#a855f7", fontWeight: "bold" }}>
               (Semantic Search Active)
             </span>
           )}
->>>>>>> main
         </Typography>
       </Box>
 
@@ -121,30 +111,18 @@ const SearchForm = ({
       {/* Filter Dropdowns */}
       <Box
         sx={{
-<<<<<<< HEAD
-          display: "flex",
-          gap: 2,
-          flexDirection: { xs: "column", sm: "row" },
-=======
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr",
             md: "repeat(3, 1fr)",
           },
           gap: 2,
->>>>>>> main
         }}
       >
         {/* Type Filter */}
         <FormControl
-<<<<<<< HEAD
-          fullWidth
-          sx={{
-            minWidth: { xs: "100%", sm: "200px" },
-=======
           sx={{
             minWidth: "100%",
->>>>>>> main
           }}
         >
           <InputLabel
@@ -200,19 +178,6 @@ const SearchForm = ({
             }}
           >
             <MenuItem value="all">All Types</MenuItem>
-<<<<<<< HEAD
-            <MenuItem value="images">Images</MenuItem>
-            <MenuItem value="videos">Videos</MenuItem>
-            <MenuItem value="documents">Documents</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Status Filter */}
-        <FormControl
-          fullWidth
-          sx={{
-            minWidth: { xs: "100%", sm: "200px" },
-=======
             <MenuItem value="image">Images</MenuItem>
             <MenuItem value="video">Videos</MenuItem>
             <MenuItem value="document">Documents</MenuItem>
@@ -222,7 +187,6 @@ const SearchForm = ({
         <FormControl
           sx={{
             minWidth: "100%",
->>>>>>> main
           }}
         >
           <InputLabel
@@ -233,14 +197,6 @@ const SearchForm = ({
               },
             }}
           >
-<<<<<<< HEAD
-            Status
-          </InputLabel>
-          <Select
-            value={statusFilter}
-            onChange={onStatusChange}
-            label="Status"
-=======
             Tags
           </InputLabel>
           <Select
@@ -249,7 +205,6 @@ const SearchForm = ({
             onChange={onTagsChange}
             label="Tags"
             renderValue={(selected) => selected.join(", ")}
->>>>>>> main
             sx={{
               backgroundColor: "rgba(107, 52, 146, 0.3)",
               borderRadius: "12px",
@@ -288,13 +243,6 @@ const SearchForm = ({
               },
             }}
           >
-<<<<<<< HEAD
-            <MenuItem value="all">All Status</MenuItem>
-            <MenuItem value="ready">Ready</MenuItem>
-            <MenuItem value="analyzing">Analyzing</MenuItem>
-            <MenuItem value="uploading">Uploading</MenuItem>
-            <MenuItem value="failed">Failed</MenuItem>
-=======
             {availableTags.length === 0 && (
               <MenuItem value="" disabled>
                 No tags available
@@ -377,7 +325,6 @@ const SearchForm = ({
                 {topic}
               </MenuItem>
             ))}
->>>>>>> main
           </Select>
         </FormControl>
       </Box>
