@@ -98,7 +98,7 @@ export const uploadMediaController = async (req: AuthRequest, res: Response) => 
       code: 500,
       message: error.message || 'Upload failed',
       error: error.message,
-    });
+    }); 
   }
 };
 

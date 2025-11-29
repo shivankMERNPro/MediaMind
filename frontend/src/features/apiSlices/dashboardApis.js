@@ -1,10 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithInterceptor } from "../baseQuery";
 
-/**
- * Media API Slice
- * Handles all media-related API calls
- */
+//-------------------------------------------------------
+//  * Media API Slice
+//  * Handles all media-related API calls
+//-------------------------------------------------------
 export const dashboardApi = createApi({
   reducerPath: "mediaApi",
   baseQuery: baseQueryWithInterceptor,
@@ -26,7 +26,9 @@ export const dashboardApi = createApi({
       providesTags: ["Media"],
     }),
 
+    //--------------------------------------
     // Semantic search
+    //--------------------------------------
     searchMedia: builder.query({
       query: ({ query, limit = 20 }) => {
         const params = new URLSearchParams();
@@ -37,13 +39,17 @@ export const dashboardApi = createApi({
       providesTags: ["Media"],
     }),
 
+    //------------------------------------
     // Get single media by ID
+    //------------------------------------
     getMediaById: builder.query({
       query: (id) => `/api/v1/media/${id}`,
       providesTags: (result, error, id) => [{ type: "Media", id }],
     }),
 
+    //-----------------------------------
     // Update media information
+    //-----------------------------------
     updateMedia: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/api/v1/media/${id}`,
@@ -56,7 +62,9 @@ export const dashboardApi = createApi({
       ],
     }),
 
+    //----------------------------------
     // Delete media
+    //----------------------------------
     deleteMedia: builder.mutation({
       query: (id) => ({
         url: `/api/v1/media/${id}`,
@@ -65,7 +73,9 @@ export const dashboardApi = createApi({
       invalidatesTags: ["Media"],
     }),
 
+    //---------------------------------
     // Upload media files
+    //---------------------------------
     uploadMedia: builder.mutation({
       query: (formData) => ({
         url: "/api/v1/media/upload",
